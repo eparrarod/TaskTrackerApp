@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.LinkedList;
 
+
 public class MainActivity extends AppCompatActivity {
 
     LinkedList<Task> tasks;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     EditText owner_input;
 
     Cursor mCursor;
+    Button button;
 
     View.OnClickListener listener = new View.OnClickListener() {
         @Override
@@ -47,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
         listView = findViewById(R.id.task_list);
         task_input = findViewById(R.id.input_et);
         owner_input = findViewById(R.id.owner_et);
+        button = findViewById(R.id.button);
         updatelistUI();
+        button.setOnClickListener(listener);
     }
 
     public void addToList(Task t){
@@ -71,12 +75,14 @@ public class MainActivity extends AppCompatActivity {
         mCursor = getContentResolver().query(TaskContentProvider.CONTENT_URI, null, null, null, null);
         tasks = new LinkedList<>();
         if (mCursor != null) {
+            mCursor.moveToFirst();
             if (mCursor.getCount() > 0) {
-                String d = mCursor.getString(1);
-                String o = mCursor.getString(2);
-                tasks.add(new Task(d, o));
-                mCursor.moveToNext();
-
+                while(mCursor.isAfterLast() == false) {
+                    String d = mCursor.getString(1);
+                    String o = mCursor.getString(2);
+                    tasks.add(new Task(d, o));
+                    mCursor.moveToNext();
+                }
             }
         }
 
